@@ -43,42 +43,8 @@ systemctl enable nagios
 systemctl status nagios
 systemctl restart apache2
 
-http://masterip/nagios/
+http://masterpublicip/nagios/  .......checking browser side
 
-Adding another host : Master side:
-
-cd /usr/local/nagios/etc
-vi servers/client01.cfg
-
-define host {
-use                          linux-server
-host_name                    slave
-alias                        Ubuntu Host
-address                      agentprivateip
-register                     1
-}
-
-define service {
-host_name                       slave
-service_description             PING
-check_command                   check_ping!100.0,20%!500.0,60%
-max_check_attempts              2
-check_interval                  2
-retry_interval                  2
-check_period                    24x7
-}
-
-define service {
-      host_name                       slave
-      service_description             Check SSH
-      check_command                   check_ssh
-      max_check_attempts              2
-      check_interval                  2
-      retry_interval                  2
-      check_period                    24x7
-}
-
-systemctl restart nagios
 
 Agent side:   Add Linux Host to Monitor:
 sudo apt update
@@ -102,5 +68,45 @@ systemctl enable nagios-nrpe-server
 systemctl status nagios-nrpe-server
 
 sudo apt install monitoring-plugins nagios-nrpe-plugin
+
+
+
+Adding another host : Master side:
+
+cd /usr/local/nagios/etc
+vi servers/client01.cfg
+
+define host {
+use                          linux-server
+host_name                    slave
+alias                        Ubuntu Host
+address                      agentprivateip
+register                     1
+}
+
+define service {
+host_name                       slave
+service_description             PING
+check_command                   check_ping
+max_check_attempts              2
+check_interval                  2
+retry_interval                  2
+check_period                    24x7
+}
+
+define service {
+      host_name                       slave
+      service_description             Check SSH
+      check_command                   check_ssh
+      max_check_attempts              2
+      check_interval                  2
+      retry_interval                  2
+      check_period                    24x7
+}
+
+systemctl restart nagios
+
+
+..................
 hostname client01
 change hostname in /etc/hostname
